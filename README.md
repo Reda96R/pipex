@@ -1,6 +1,4 @@
 # ::: Pipex :::
-`This project will let you discover in detail a UNIX mechanism that you already know
-by using it in your program`
 
 # What is pipe?
 
@@ -8,8 +6,6 @@ Pipe is primarily used in programming on Unix systems, and it is an [interproces
 
 ## Resources:
 
-[pipes under the hood](https://brandonwamboldt.ca/how-linux-pipes-work-under-the-hood-1518/)
-
-[this amazing article by Ahmad Mardeni explaining the fork() function](https://www.section.io/engineering-education/fork-in-c-programming-language/#:~:text=What%20is%20a%20Fork()%3F,also%20kills%20the%20child%20process.)
-
-[pipe system call](https://www.geeksforgeeks.org/pipe-system-call/)
+- [pipes under the hood](https://brandonwamboldt.ca/how-linux-pipes-work-under-the-hood-1518/)
+- [this amazing article by Ahmad Mardeni explaining the fork() function](https://www.section.io/engineering-education/fork-in-c-programming-language/#:~:text=What%20is%20a%20Fork()%3F,also%20kills%20the%20child%20process.)
+- [pipe system call](https://www.geeksforgeeks.org/pipe-system-call/)
