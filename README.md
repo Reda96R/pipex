@@ -1,5 +1,6 @@
 # ::: Pipex :::
-
+`This project will let you discover in detail a UNIX mechanism that you already know
+by using it in your program.`
 # What is pipe?
 
 Pipe is primarily used in programming on Unix systems, and it is an [interprocess communication](https://en.wikipedia.org/wiki/Inter-process_communication), which means it passes information from one program process to another, but it only offers one-way communication by passing an output from a process (command) to another.
