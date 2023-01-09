@@ -10,7 +10,7 @@ before knowing more about piping, we should have a look at how linux creates pro
 
 ## How does linux create processes?
 
-a new processes in linux can be created using [fork()](https://man7.org/linux/man-pages/man2/fork.2.html) system cal,
+a new processes in linux can be created using [fork()](https://man7.org/linux/man-pages/man2/fork.2.html) system call,
 
 ## Resources:
 
