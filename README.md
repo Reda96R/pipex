@@ -14,7 +14,7 @@ before knowing more about piping, we should have a look at how linux creates pro
 
 In general a new process in Linux is created after an existing process makes an exact copy of itsself, these two pocesses (the child and parent), share the same environment, but they differ when it commes to the ID. 
 
-the new pocess is crerated when one of these functions : **`fork, posix_spawn, _Fork, vfork`** is called, in our case we’ll work with `[fork()](https://man7.org/linux/man-pages/man2/fork.2.html)`.
+the new pocess is crerated when one of these functions : **`fork, posix_spawn, _Fork, vfork`** is called, in our case we’ll work with [fork()](https://man7.org/linux/man-pages/man2/fork.2.html).
 
 if you want to dive a little bit deeper in this subject you can check [this article](https://subscription.packtpub.com/book/application-development/9781785883057/1/ch01lvl1sec12/process-creation) about process creation in Linux.
 
@@ -22,9 +22,9 @@ if you want to dive a little bit deeper in this subject you can check [this arti
 
 fork() will help us run two processes in one single program, it is responsible of creating the child out of the original process, it returns an int value, that can be :
 
-- 0 : if the child process is created,
-- > 0 : if it is the parent process,
-- < 0 : if there is an error.
+- n = 0 : if the child process is created,
+- n > 0 : if it is the parent process,
+- n < 0 : if there is an error.
 
 ## How does piping work ?
 
@@ -50,9 +50,7 @@ The general idea of this project is to read from file1, then execute cmd1, and s
 
 in more technical way, first we’ll use `dup()` to set the input of the first cmd to file1, then `pipe()` will send the output of cmd1 (`execve()`) as input to cmd2 with the help of `dup()` , and `fork()` will make sure to run the two pocesses in one program.
 
-```bash
-//every cmd needs a stdin and strdout
-														
+```bash														
 							 PIPE
 						|---------------------|
 			 file1 ---> cmd1 ---> end[1]<--------------->end[0] ---> cmd2 ---> file2  
