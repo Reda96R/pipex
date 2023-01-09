@@ -55,8 +55,8 @@ in more technical way, first we’ll use `dup()` to set the input of the first c
 														
 							 PIPE
 						|---------------------|
-			    file1 ---> cmd1  end[1]<--------------->end[0] ---> cmd2 ---> file2  
-			    (stdin1)		|---------------------|                  (stdout2)
+			 file1 ---> cmd1 ---> end[1]<--------------->end[0] ---> cmd2 ---> file2  
+			 (stdin1)		|---------------------|                   (stdout2)
 					    (stdout1)	           (stdin2) 					
 ```
 
