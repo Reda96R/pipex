@@ -53,7 +53,7 @@ The general idea of this project is to read from file1, then execute cmd1, and s
 in more technical way, first we’ll use `dup()` to set the input of the first cmd to file1, then `pipe()` will send the output of cmd1 (`execve()`) as input to cmd2 with the help of `dup()` , and `fork()` will split the processe in two simultaneous processes that run at the same time.
 
 ```bash
-PIPE
+							PIPE
 						|---------------------|
 			 file1 ---> cmd1 ---> ends[1]<--------------->ends[0] ---> cmd2 ---> file2  
 			 (stdin1)		|---------------------|                   (stdout2)
@@ -90,7 +90,7 @@ int main(int ac, char *av[], char *env[])
 }
 ```
 
-we’ll use `t_info info` that contains everything we’ll need to make our code cleaner, it will defined in our header, we also used `[pid_t](https://www.notion.so/Pipex-ed7ba9ca1a4a45ce90010ee4aacbf98a) pid` that will represent the process ID and we’ll check wether **pid** is the parent or the child,
+we’ll use `t_info info` that contains everything we’ll need to make our code cleaner, it will defined in our header, we also used [pid_t](https://www.notion.so/Pipex-ed7ba9ca1a4a45ce90010ee4aacbf98a) pid that will represent the process ID and we’ll check wether **pid** is the parent or the child,
 
 ```c
 typedef struct s_info
