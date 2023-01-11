@@ -14,7 +14,7 @@ before knowing more about piping, we should have a look at how linux creates pro
 
 In general a new process in Linux is created after an existing process makes an exact copy of itsself, these two pocesses (the child and parent), share the same environment, but they differ when it commes to the ID. 
 
-the new pocess is crerated when one of these functions : **`fork, posix_spawn, _Fork, vfork`** is called, in our case we’ll work with `[fork()](https://man7.org/linux/man-pages/man2/fork.2.html)`.
+the new pocess is crerated when one of these functions : **`fork, posix_spawn, _Fork, vfork`** is called, in our case we’ll work with [fork()](https://man7.org/linux/man-pages/man2/fork.2.html).
 
 if you want to dive a little bit deeper in this subject you can check [this article](https://subscription.packtpub.com/book/application-development/9781785883057/1/ch01lvl1sec12/process-creation) about process creation in Linux.
 
@@ -90,7 +90,7 @@ int main(int ac, char *av[], char *env[])
 }
 ```
 
-we’ll use `t_info info` that contains everything we’ll need to make our code cleaner, it will defined in our header, we also used [pid_t](https://www.notion.so/Pipex-ed7ba9ca1a4a45ce90010ee4aacbf98a) pid that will represent the process ID and we’ll check wether **pid** is the parent or the child,
+we’ll use `t_info info` that contains everything we’ll need to make our code cleaner, it will defined in our header, we also used [pid_t](https://ftp.gnu.org/old-gnu/Manuals/glibc-2.2.3/html_node/libc_554.html#:~:text=The%20pid_t%20data%20type%20represents,'%20and%20%60sys%2Ftypes.) pid that will represent the process ID and we’ll check wether **pid** is the parent or the child,
 
 ```c
 typedef struct s_info
