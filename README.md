@@ -1,5 +1,3 @@
-# ::: Pipex :::
-
 `This project will let you discover in detail a UNIX mechanism that you already know by using it in your program.`
 
 # Background theory:
@@ -51,7 +49,6 @@ the kernel will handle the scheduling of processes so they can run in parallel.
 The general idea of this project is to read from file1, then execute cmd1, and send its output to cmd2 which will output to file2.
 
 in more technical way, first we’ll use `dup()` to set the input of the first cmd to file1, then `pipe()` will send the output of cmd1 (`execve()`) as input to cmd2 with the help of `dup()` , and `fork()` will split the processe in two simultaneous processes that run at the same time.
-
 ```bash
 							PIPE
 						|---------------------|
@@ -77,23 +74,23 @@ next will need to split our pocess into two parallel processes,
 ```c
 int main(int ac, char *av[], char *env[])
 {
-	t_info info
+	t_process_info process_info
 	
-	pipe(info.ends);
-	info.pid = fork();
-	if (info.pid < 0)
+	pipe(process_info.ends);
+	process_info.pid = fork();
+	if (process_info.pid < 0)
 		return (ft_error(FORK));
-	if (!info.pid)
-		ft_child(info, av, env);
+	if (!process_info.pid)
+		ft_child(process_info, av, env);
 	else
-		ft_parent(info, av, env); 
+		ft_parent(process_info, av, env);
 }
 ```
 
-we’ll use `t_info info` that contains everything we’ll need to make our code cleaner, it will defined in our header, we also used [pid_t](https://ftp.gnu.org/old-gnu/Manuals/glibc-2.2.3/html_node/libc_554.html#:~:text=The%20pid_t%20data%20type%20represents,'%20and%20%60sys%2Ftypes.) pid that will represent the process ID and we’ll check wether **pid** is the parent or the child,
+in order to make the code cleaner and easy to understand, we’ll use `t_process_info process_info` that contains all the informations we’ll need, it will defined in our header, we also used [pid_t](https://www.notion.so/Pipex-ed7ba9ca1a4a45ce90010ee4aacbf98a) pid that will represent the process ID and we’ll check wether **pid** is the parent or the child,
 
 ```c
-typedef struct s_info
+typedef struct s_process_info
 {
 	t_pid pid;
 	int ends[2];
@@ -102,52 +99,97 @@ typedef struct s_info
 	char **cmd_path;
 	char **cmd_args;
 	char *cmd;
-}t_info
+}t_process_info
 ```
 
 now let’s make the parent and the child functions, and we’ll start by the child,
 
 ```c
-void ft_child(t_info info, char *av[], char *env[])
+void ft_child(t_process_info process_info, char *av[], char *env[])
 {
-	dup2 (info.ends[1], 1); //changing the output of cmd1 to stdout
-	close (ends[0]);
-	dup2 (info.infile, 0); //setting stdin to the fd of infile
-	info.cmd_args = ft_split(av[2], ' '); //getting cmd1 arguments
-	info.cmd = ft_getcmd(info.cmd_path, info.cmd_args[0]); //getting the command
-	if (!cmd) //incase we have a problem with the command we'll free the process and exit
+	dup2 (process_info.ends[1], 1); //changing the output of cmd1 to stdout
+	close (process_info.ends[0]);
+	dup2 (process_info.infile, 0); //setting stdin to the fd of infile
+	process_info.cmd_args = ft_split(av[2], ' '); //getting cmd1 arguments
+	process_info.cmd = ft_getcmd(process_info.cmd_path, process_info.cmd_args[0]); //getting the command
+	if (!process_info.cmd) //incase we have a problem with the command we'll free the process and exit
 	{
-		ft_free(&info);
+		ft_free(&process_info);
 		ft_msg(ERR_CMD);
 		exit(1);
 	}
-	execve (info.cmd, info.cmd_args, env); //executing the command
+	execve (process_info.cmd, process_info.cmd_args, env); //executing the command
 }
 ```
 
 for the parent process, it’s the same thing, we just need to change the output fom stdout to the outfile, and the input to `ends[0]` and we need to close `ends[1]` , also to make the parent wait for the child to finish it’s process,
 
 ```c
-void ft_parent(t_info info, char *av[], char *env[])
+void ft_parent(t_process_info process_info, char *av[], char *env[])
 {
-	int status;
-	waitpid(-1, &status, 0);
-	dup2 (info.ends[0], 0);
-	close (ends[1]);
-	dup2 (info.outfile, 1);
-	info.cmd_args = ft_split(av[3], ' ');
-	info.cmd = ft_getcmd(info.cmd_path, info.cmd_args[0]);
-	if (!cmd)
+	dup2 (process_info.ends[0], 0);
+	close (process_info.ends[1]);
+	dup2 (process_info.outfile, 1);
+	process_info.cmd_args = ft_split(av[3], ' ');
+	process_info.cmd = ft_getcmd(process_info.cmd_path, process_info.cmd_args[0]);
+		if (!process_info.cmd)
 	{
-		ft_free(&info);
+		ft_free(&process_info);
 		ft_msg(ERR_CMD);
 		exit(1);
 	}
-	execve (info.cmd, info.cmd_args, env);
+	execve (process_info.cmd, process_info.cmd_args, env);
 }
 ```
 
-## in the making… =)
+in oder to prevent leaks, we need to free all the resources used by the child and the parent after the execution of the commands or in the case of an error,
+
+we’ll start with the parent,
+
+```c
+void ft_free_parent(t_process_info *process_info)
+{
+	int i;
+
+	i = 0;
+	close (process_info->infile);
+	close (process_info->outfile);
+	while (process_info->cmd_path)
+	{
+		free(process_info->cmd_path[i]);
+		i++;
+	}
+	free (process_info->cmd_path);
+}
+```
+
+we first close the file descriptor for infile and the outfile using the `close()` function. Then we iterates through the `cmd_path` array in the `t_process_info` struct and we free the memory allocated for each element of the array using the `free()` function. Finally, we free the memory allocated for the `cmd_path` array itself.
+
+now let’s deal with the child,
+
+```c
+void ft_free_child(t_process_info *process_info)
+{
+	int i;
+
+	i = 0;
+	while (process_info->cmd_args[i])
+	{
+		free(process_info->cmd_args[i]);
+		i++;
+	}
+	free (process_info->cmd_args);
+	free (process_info->cmd);
+}
+```
+
+ we first iterate through the `cmd_args` array in the `t_process_info` struct and free the memory allocated for each element of the array using the `free()` function. Then we free the memory allocated for the `cmd_args` array itself. Lastly, we free the memory allocated for the `cmd` field in the `t_process_info` struct.
+
+<aside>
+💡 A pointer is used as an argument here (`*process_info`) because it allows the function to modify the struct and its members directly, rather than working with a copy of the struct, because passing a struct by value creates a copy of the struct on the stack and any modifications made to the struct within the function will not be reflected in the original struct, and by passing a pointer to the struct, the function can access and modify the original struct, and any changes made to the struct within the function will be reflected in the original struct after the function is done executing.
+Additionally, using a pointer also save memory, as it does not need to copy the entire struct on the stack, just the memory address is passed, which is much smaller.
+
+</aside>
 
 ## Resources:
 
@@ -156,3 +198,6 @@ void ft_parent(t_info info, char *av[], char *env[])
 - [pipe system call](https://www.geeksforgeeks.org/pipe-system-call/)
 - [how linux creates processes](https://brandonwamboldt.ca/how-linux-creates-processes-1528/)
 - [how bash redirection work](https://brandonwamboldt.ca/how-bash-redirection-works-under-the-hood-1512/)
+- [understanding the waitpid function](https://www.ibm.com/docs/en/zos/2.4.0?topic=functions-waitpid-wait-specific-child-process-end)
+- [decorating the makefile : )](https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux)
+-
