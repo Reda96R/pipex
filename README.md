@@ -1,5 +1,6 @@
 `This project will let you discover in detail a UNIX mechanism that you already know by using it in your program.`
 
+!!!this projuct is still under building, so the code is not reunning well yet!!!
 # Background theory:
 
 ## What is pipe?
