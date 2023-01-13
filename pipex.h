@@ -6,7 +6,7 @@
 /*   By: rerayyad <rerayyad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 21:52:13 by rerayyad          #+#    #+#             */
-/*   Updated: 2023/01/12 17:22:16 by rerayyad         ###   ########.fr       */
+/*   Updated: 2023/01/13 16:14:51 by rerayyad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,10 +46,16 @@ typedef struct s_process_info
 void    ft_child(t_process_info process_info, char *av[], char *env[]);
 void    ft_parent(t_process_info process_info, char *av[], char *env[]);
 
+//ft_free.c
+void    ft_free_parent(t_process_info *process_info);
+void    ft_free_child(t_process_info *process_info);
+
 //ft_helpers.c
-int		ft_strncmp(const char *s1, const char *s2, size_t n);
 char	**ft_split(char *s, char c);
 int     ft_strlen(char *str);
+char    *ft_cmdfinder(char  **path, char *cmd);
+char    *ft_strjoin(char *s1, char *s2);
+int     ft_strncmp(char *s1, char *s2, int n);
 
 //ft_errors.c
 int     ft_msg(char *err);

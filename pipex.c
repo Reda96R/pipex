@@ -6,7 +6,7 @@
 /*   By: rerayyad <rerayyad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 21:56:44 by rerayyad          #+#    #+#             */
-/*   Updated: 2023/01/12 17:23:12 by rerayyad         ###   ########.fr       */
+/*   Updated: 2023/01/13 16:14:06 by rerayyad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,8 +25,14 @@ int main(int ac, char *av[], char *env[])
 
     if (ac == 5)
     {
+        process_info.infile = open(av[1], O_RDONLY);
+        if (process_info.infile < 0)
+            ft_errormsg(ERR_INFILE);
+        process_info.outfile = open (av[ac - 1], O_TRUNC | O_CREAT | O_RDWR, 0777);
+        if (process_info.outfile < 0)
+            ft_errormsg(ERR_OUTFILE);
         process_info.path = ft_path_finder(env); 
-        process_info.cmd_path = ft_split(process_info.cmd_path, ':');
+        process_info.cmd_path = ft_split(process_info.path, ':');
         pipe (process_info.ends);
         process_info.path = ft_path_finder(env);
         process_info.cmd_path = ft_split(process_info.path, ':');
@@ -40,4 +46,5 @@ int main(int ac, char *av[], char *env[])
         ft_free_parent(&process_info);
         return (0);
     }
+    return (ft_msg(ERR_INPUT));
 }

@@ -6,7 +6,7 @@
 /*   By: rerayyad <rerayyad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/12 10:12:01 by rerayyad          #+#    #+#             */
-/*   Updated: 2023/01/12 17:26:47 by rerayyad         ###   ########.fr       */
+/*   Updated: 2023/01/13 16:14:31 by rerayyad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void    ft_child(t_process_info process_info, char *av[], char *env[])
     close (process_info.ends[0]);
     dup2(process_info.infile, 0);
     process_info.cmd_args = ft_split(av[2], ' ');
-    process_info.cmd = ft_getcmd(process_info.cmd_path, process_info.cmd_args[0]);
+    process_info.cmd = ft_cmdfinder(process_info.cmd_path, process_info.cmd_args[0]);
     if (!process_info.cmd)
     {
         ft_free_child(&process_info);
@@ -38,7 +38,7 @@ void    ft_parent(t_process_info process_info, char *av[], char *env[])
     close (process_info.ends[1]);
     dup2(process_info.outfile, 1);
     process_info.cmd_args = ft_split(av[3], ' ');
-    process_info.cmd = ft_getcmd(process_info.cmd_path, process_info.cmd_args[0]);
+    process_info.cmd = ft_cmdfinder(process_info.cmd_path, process_info.cmd_args[0]);
     if (!process_info.cmd)
     {
         ft_free_parent(&process_info);
