@@ -255,7 +255,7 @@ int main(int ac, char *av[], char *env[])
 		ft_free_parent(&process_info);//freeing resources after the execution
 		return (0);	
 	}
-return (ft_msg(ERR_INPUT)); //in the case of invalide number of arguments
+	return (ft_msg(ERR_INPUT)); //in the case of invalide number of arguments
 }
 ```
 
