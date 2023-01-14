@@ -1,6 +1,7 @@
+# ::: Pipex :::
+
 `This project will let you discover in detail a UNIX mechanism that you already know by using it in your program.`
 
-!!!this projuct is still under building, so the code is not reunning well yet!!!
 # Background theory:
 
 ## What is pipe?
@@ -51,7 +52,7 @@ The general idea of this project is to read from file1, then execute cmd1, and s
 
 in more technical way, first we’ll use `dup()` to set the input of the first cmd to file1, then `pipe()` will send the output of cmd1 (`execve()`) as input to cmd2 with the help of `dup()` , and `fork()` will split the processe in two simultaneous processes that run at the same time.
 ```bash
-							PIPE
+PIPE
 						|---------------------|
 			 file1 ---> cmd1 ---> ends[1]<--------------->ends[0] ---> cmd2 ---> file2  
 			 (stdin1)		|---------------------|                   (stdout2)
@@ -192,15 +193,78 @@ Additionally, using a pointer also save memory, as it does not need to copy the 
 
 </aside>
 
-## in the making...
+now let’s structure our code together,
+
+```c
+#include "pipex.h"
+char *ft_path_finder(char *env[]) // this function will find the paths to cmds
+{
+	while(ft_strncmp("PATH", *env, 4))
+		env++;
+	return (*env + 5);
+}
+```
+
+This function will take the environment variable (`char *env[]`) and iterates through it until it finds the "PATH" variable. Once it finds "PATH", it returns a pointer to the value of the PATH variable with the first five characters (which appear to be "PATH=") removed. So this function is used to find the PATH variable in the environment and return the path string after "PATH=".
+
+to make things clearer, if we execute echo `$PATH` which will print the value of the PATH variable, we’ll get something like this :
+
+```c
+/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/munki
+```
+
+<aside>
+💡 The PATH environment variable is a system variable that contains a list of directories, separated by a semicolon (on Windows) or a colon (on Linux and macOS), where the operating system should look for executable files, so when you type a command into the command prompt or terminal, the operating system looks for that command in the directories listed in the PATH variable in the order they are specified. If the command is found in one of the directories, it is executed. If the command is not found in any of the directories listed in the PATH variable, the operating system will return an error message indicating that the command could not be found.
+
+</aside>
+
+```c
+int main(int ac, char *av[], char *env[])
+{
+	t_process_info process_info;
+
+	if (ac == 5)
+	{
+		/*:::first thing is to open the in & out files:::*/
+		process_info.infile = open(av[1], O_RDONLY);
+		if (pocess_info.infile < 0)
+			ft_errormsg(ERR_INFILE);
+		process_info.outfile = open(av[ac - 1], O_TRUNC | O_CREAT | O_RDWR, 0777);
+		if (process_info.outfile < 0)
+			ft_errormsg(ERR_OUTFILE);
+		/*:::::::::::::::::::::::::::::::::::::::::::::::*/
+
+		/*:::now we get the paths for the commands:::*/
+		process_path = ft_path_finder(env);
+		process_info.cmd_path = ft_split(process_info.cmd_path, ':');
+		/*:::::::::::::::::::::::::::::::::::::::::::::::*/
+		
+		process_info.pid = fork();
+		if (process_info.pid < 0)
+			ft_errormsg(ERR_FORK);
+	
+		
+		/*:::checking the output of fork and executing each command:::*/
+		if (!process_info.pid)
+			ft_child(process_info, ac, env);
+		else
+			ft_parent(process_info, ac, env);
+		/*:::::::::::::::::::::::::::::::::::::::::::::::*/
+		
+
+		ft_free_parent(&process_info);//freeing resources after the execution
+		return (0);	
+	}
+return (ft_msg(ERR_INPUT)); //in the case of invalide number of arguments
+}
+```
 
 ## Resources:
 
 - [pipes under the hood](https://brandonwamboldt.ca/how-linux-pipes-work-under-the-hood-1518/)
 - [this amazing article by Ahmad Mardeni explaining the fork() function](https://www.section.io/engineering-education/fork-in-c-programming-language/#:~:text=What%20is%20a%20Fork()%3F,also%20kills%20the%20child%20process.)
-- [pipe system call](https://www.geeksforgeeks.org/pipe-system-call/)
+- [pipe system call](https://www.geeksforgeeks.org/pipe-system-call/);
 - [how linux creates processes](https://brandonwamboldt.ca/how-linux-creates-processes-1528/)
 - [how bash redirection work](https://brandonwamboldt.ca/how-bash-redirection-works-under-the-hood-1512/)
 - [understanding the waitpid function](https://www.ibm.com/docs/en/zos/2.4.0?topic=functions-waitpid-wait-specific-child-process-end)
 - [decorating the makefile : )](https://stackoverflow.com/questions/5947742/how-to-change-the-output-color-of-echo-in-linux)
--
