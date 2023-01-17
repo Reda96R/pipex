@@ -1,5 +1,3 @@
-# ::: Pipex :::
-
 `This project will let you discover in detail a UNIX mechanism that you already know by using it in your program.`
 
 # Background theory:
@@ -69,7 +67,7 @@ yes you’ve heard it right, we have **zombie processes**, they’re processes t
 
 in general a zombie process is peaceful, because the system frees its resources (data, execution stack…) but its process control block wil be saved, and therefore it consumes no energy or memory space, and it is automatically eliminated by `init` if they become orphant, but if the parent is never intended to end (server, background process, etc…), and it creates children regularly without waiting for them, in this case the process table might get saturated, and that would block the system, preventing the execution of new processes.
 
-if you like The Walking Dead, you can read [this article](https://www.it-connect.fr/les-processus-zombies/) (it is in French) about zombie processes, and how to create them.
+if you’re a fan of The Walking Dead or want to know more about zombie processes, check [this article](https://www.it-connect.fr/les-processus-zombies/) (it is in French) about zombie processes, and how to create them.
 
 if we want the parent process to take good care of his children we can use the `wait` and `waitpid` system calls.
 
@@ -136,12 +134,22 @@ the kernel will handle the scheduling of processes so they can run in parallel.
 The general idea of this project is to read from file1, then execute cmd1, and send its output to cmd2 which will output to file2.
 
 in more technical way, first we’ll use `dup()` to set the input of the first cmd to file1, then `pipe()` will send the output of cmd1 (`execve()`) as input to cmd2 with the help of `dup()` , and `fork()` will split the processe in two simultaneous processes that run at the same time.
+
 ```bash
-			   		 PIPE
-				|---------------------|
-	 file1 ---> cmd1 ---> ends[1]<--------------->ends[0] ---> cmd2 ---> file2  
-	 (stdin1)		|---------------------|                   (stdout2)
-			    (stdout1)	           (stdin2)
+														
+														PIPE
+									 |---------------------|
+file1 ---> cmd1  ends[1]<--------------->ends[0] ---> cmd2 ---> file2  
+(stdin1)					 |---------------------|                    (stdout2)
+								(stdout1)	             (stdin2) 			
+```
+
+```bash
+PIPE
+						|---------------------|
+			 file1 ---> cmd1 ---> ends[1]<--------------->ends[0] ---> cmd2 ---> file2  
+			 (stdin1)		|---------------------|                   (stdout2)
+					    (stdout1)	           (stdin2)
 ```
 
 The first thing will need to do is to create the pipe using `pipe()`
@@ -396,7 +404,7 @@ int main(int ac, char *av[], char *env[])
 		process_path = ft_path_finder(env);
 		process_info.cmd_path = ft_split(process_info.cmd_path, ':');
 		
-		/*:::we will fork two times (two children):::*/
+		/*:::we'll fork two times (two children):::*/
 		process_info.fchild = fork(); // First child
 		if (!process_info.fchild)
 				ft_fchild(process_info, av, env);
