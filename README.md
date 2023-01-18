@@ -134,22 +134,12 @@ the kernel will handle the scheduling of processes so they can run in parallel.
 The general idea of this project is to read from file1, then execute cmd1, and send its output to cmd2 which will output to file2.
 
 in more technical way, first we’ll use `dup()` to set the input of the first cmd to file1, then `pipe()` will send the output of cmd1 (`execve()`) as input to cmd2 with the help of `dup()` , and `fork()` will split the processe in two simultaneous processes that run at the same time.
-
 ```bash
-														
-														PIPE
-									 |---------------------|
-file1 ---> cmd1  ends[1]<--------------->ends[0] ---> cmd2 ---> file2  
-(stdin1)					 |---------------------|                    (stdout2)
-								(stdout1)	             (stdin2) 			
-```
-
-```bash
-PIPE
-						|---------------------|
-			 file1 ---> cmd1 ---> ends[1]<--------------->ends[0] ---> cmd2 ---> file2  
-			 (stdin1)		|---------------------|                   (stdout2)
-					    (stdout1)	           (stdin2)
+					 PIPE
+				|---------------------|
+	file1 ---> cmd1 ---> ends[1]<--------------->ends[0] ---> cmd2 ---> file2  
+	 (stdin1)		|---------------------|                   (stdout2)
+			    (stdout1)	           (stdin2)
 ```
 
 The first thing will need to do is to create the pipe using `pipe()`
