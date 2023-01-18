@@ -1,5 +1,5 @@
 NAME = pipex
-FILES = main.c ft_errors.c ft_free.c ft_processes.c ft_strlen.c ft_cmdfinder.c ft_split.c ft_strjoin.c ft_strncmp.c
+FILES = main.c pipex.c ft_processes.c ft_tools.c ft_strlen.c ft_split.c ft_strjoin.c ft_strncmp.c
 OBJS = $(FILES:.c=.o)
 CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
 
