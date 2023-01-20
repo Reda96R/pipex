@@ -6,7 +6,7 @@
 /*   By: rerayyad <rerayyad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/18 12:07:47 by rerayyad          #+#    #+#             */
-/*   Updated: 2023/01/18 16:46:47 by rerayyad         ###   ########.fr       */
+/*   Updated: 2023/01/20 18:34:26 by rerayyad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,21 +49,24 @@ void	ft_close_pipe(t_process_info *p_info)
 
 void	pipex(char *av[], char *env[], t_process_info	*p_info)
 {
-	pipe (p_info->ends);
-	if (p_info->ends < 0)
-		ft_errormsg(ERR_PIPE);
+	if (pipe(p_info->ends) < 0)
+		perror(ERR_PIPE);
 	p_info->path = ft_path_finder(env);
-	// if (!p_info.path)
-	// 	ft_errormsg(ERR_ENV);
 	p_info->cmd_path = ft_split(p_info->path, ':');
 	p_info->fchild = fork();
+	if (p_info->fchild < 0)
+		perror(ERR_FORK);
 	if (!p_info->fchild)
 		ft_fchild(p_info, av, env);
 	p_info->schild = fork();
+	if (p_info->schild < 0)
+		perror(ERR_FORK);
 	if (!p_info->schild)
 		ft_schild(p_info, av, env);
 	ft_close_pipe(p_info);
 	waitpid(p_info->fchild, &p_info->status, 0);
 	waitpid(p_info->schild, &p_info->status, 0);
 	ft_free_parent(p_info);
+	close(p_info->infile);
+	close(p_info->outfile);
 }

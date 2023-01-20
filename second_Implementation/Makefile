@@ -1,7 +1,7 @@
 NAME = pipex
-FILES = main.c pipex.c ft_processes.c ft_tools.c ft_strlen.c ft_split.c ft_strjoin.c ft_strncmp.c
+FILES = main.c pipex.c ft_processes.c ft_tools.c ft_strlen.c ft_split.c ft_strjoin.c ft_strncmp.c 
 OBJS = $(FILES:.c=.o)
-CFLAGS = -Wall -Wextra -Werror -fsanitize=address -g
+CFLAGS = -Wall -Wextra -Werror
 
 
 all: $(NAME)

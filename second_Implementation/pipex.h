@@ -6,7 +6,7 @@
 /*   By: rerayyad <rerayyad@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/11 21:52:13 by rerayyad          #+#    #+#             */
-/*   Updated: 2023/01/18 18:08:29 by rerayyad         ###   ########.fr       */
+/*   Updated: 2023/01/20 18:52:59 by rerayyad         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,24 +22,22 @@
 # include <string.h>
 # include <stdio.h>
 # include <errno.h>
-
-# define ERR_FORK "Fork"
+# define ERR_FORK "Fork error"
 # define ERR_INFILE "zsh"
 # define ERR_OUTFILE "outfile error"
-# define ERR_INPUT "invalide input: More or less than 5 arguments.\n"
+# define ERR_INPUT "invalide input: More or less than 5 arguments\n"
 # define ERR_PIPE "pipe error"
 # define ERR_CMD ": command not found\n"
-# define ERR_ENV "command not found"
 # define ERR_EXECVE "command not found"
 
-typedef struct s_p_info
+typedef struct s_process_info
 {
 	pid_t	fchild;
 	pid_t	schild;
 	int		ends[2];
 	int		infile;
-	int		status;
 	int		outfile;
+	int		status;
 	char	*path;
 	char	**cmd_path;
 	char	**cmd_args;
@@ -49,7 +47,7 @@ typedef struct s_p_info
 //pipex
 void	pipex(char *av[], char *env[], t_process_info *p_info);
 
-//processes_manager
+//processes_managers
 void	ft_fchild(t_process_info *p_info, char *av[], char *env[]);
 void	ft_schild(t_process_info *p_info, char *av[], char *env[]);
 
