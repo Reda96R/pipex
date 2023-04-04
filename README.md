@@ -135,7 +135,6 @@ the kernel will handle the scheduling of processes so they can run in parallel.
 The general idea of this project is to read from file1, then execute cmd1, and send its output to cmd2 which will output to file2.
 
 in more technical way, first we’ll use `dup2()` to set the input of the first cmd to file1, then `pipe()` will send the output of cmd1 (`execve()`) as input to cmd2 with the help of `dup2()` , and `fork()` will split the processes in two simultaneous processes that run at the same time.
-```
 
 ```
 						PIPE
